@@ -3,7 +3,6 @@
 
 import requests
 from parsel import Selector
-from selenium import webdriver
 import re
 
 def get_html(url):
@@ -53,7 +52,7 @@ def process_features(features,item):
   item['refrigerator'] = True if 'REFRIGERATOR' in features else False
   item['dishwasher'] = True if 'DISHWASHER' in features else False
   item['trash_compactor'] = True if 'GARBAGE' in features or 'TRASH' and 'COMPACTOR' in features else False
-  item['colling'] = True if 'AIR' and 'CONDITIONING' in features else False
+  item['cooling'] = True if 'AIR' and 'CONDITIONING' in features else False
 
   # Equipment
   item['pool'] = True if 'POOL' in features else False
@@ -72,5 +71,4 @@ def process_features(features,item):
 
 if __name__ == '__main__':
   url = 'https://www.redfin.com/WA/Seattle/4721-47th-Ave-SW-98116/home/152688'
-#  url = 'https://www.zillow.com/homedetails/57-Northgate-Ave-Daly-City-CA-94015/15458476_zpid/'
   item = parse(url)

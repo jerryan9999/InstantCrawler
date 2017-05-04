@@ -76,5 +76,4 @@ def process_value(value):
 
 if __name__ == '__main__':
   url = "https://www.zillow.com/homedetails/32-W-40th-St-APT-2N-New-York-NY-10018/2111535338_zpid/"
-#  url = 'https://www.redfin.com/WA/Seattle/2591-Perkins-Ln-W-98199/home/126436'
   item = parse(url)
