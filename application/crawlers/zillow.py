@@ -31,7 +31,6 @@ def parse(url):
 
   fact_and_features_sel = sel.xpath('//div[contains(@class,"hdp-facts-expandable-container")]')
   item['type'] =fact_and_features_sel.xpath('div[1]/div[1]/div/div[2]/div/text()').extract_first()
-  item['washer'] = fact_and_features_sel.xpath('div[1]/div[2]/div/div[2]/div/text()').extract_first()
 
   # features set preparation
   features = fact_and_features_sel.xpath('//span[@class="hdp-fact-value"]/text()').extract()
