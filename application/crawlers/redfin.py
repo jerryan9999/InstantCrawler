@@ -5,13 +5,14 @@ import requests
 from parsel import Selector
 import re
 
+headers = {
+  'Accept':'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+  'Accept-Encoding':'gzip',
+  'Accept-Language':'zh-CN,zh;q=0.8',
+  'User-Agent':'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36'
+}
+
 def get_html(url):
-  headers = {
-    'Accept':'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
-    'Accept-Encoding':'gzip',
-    'Accept-Language':'zh-CN,zh;q=0.8',
-    'User-Agent':'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36'
-  }
   try:    
     response = requests.get(url, headers=headers, timeout=10)
   except:
