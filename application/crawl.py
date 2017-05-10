@@ -73,7 +73,7 @@ def post_addr():
   # search redfin
   if params['source']=='redfin':
     search_url = redfin.addr_to_search_url(formatted_address)
-    print(search_url)
+    #print(search_url)
     url = redfin.parse_searching_page(search_url)
     if url:
       item = redfin.parse(url)
