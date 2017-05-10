@@ -4,22 +4,30 @@
 import requests
 from parsel import Selector
 import re
+from urllib.parse import urlencode
+
+headers = {
+  'Accept':'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+  'Accept-Encoding':'gzip',
+  'Accept-Language':'zh-CN,zh;q=0.8',
+  'User-Agent':'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36'
+}
+
+API = 'https://www.redfin.com/stingray/do/location-autocomplete'
 
 def get_html(url):
-  headers = {
-    'Accept':'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
-    'Accept-Encoding':'gzip',
-    'Accept-Language':'zh-CN,zh;q=0.8',
-    'User-Agent':'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36'
-  }
   try:    
     response = requests.get(url, headers=headers, timeout=10)
   except:
     return {'status':400, 'data':None}
   if response.status_code != 200:
     return {'status':400, 'data':None}
-  response = response.text
-  return {'status':200, 'data':response}
+  else:
+    if 'home' in response.url:
+      response = response.text
+      return {'status':200, 'data':response}
+    else:
+      return {'status':400, 'data':None}
 
 def parse(url):
   ''' 
@@ -69,6 +77,26 @@ def process_features(features,item):
 
   return item
 
+def addr_to_search_url(address):
+  ''''input: 2913 Pescadero Terrace, Fremont, CA 94538, USA'''
+  address = address.split(',')[0]
+  params_dict = {'location':address,'start':0,'count':10,'v':2,'al':1,'iss':'false','ooa':'true'}
+  search_url = API + "?" + urlencode(params_dict)
+  return search_url
+
+def parse_searching_page(url):
+  r = requests.get(url,headers=headers)
+  urlstringre = re.search(r'url":"(.+?)"',r.text)
+  if urlstringre:
+    return "https://www.redfin.com"+urlstringre.group(1)
+
+
 if __name__ == '__main__':
-  url = 'https://www.redfin.com/WA/Seattle/4721-47th-Ave-SW-98116/home/152688'
-  item = parse(url)
+  #url = 'https://www.redfin.com/WA/Seattle/4721-47th-Ave-SW-98116/home/152688'
+  formatted_address ='2913 Pescadero Terrace, Fremont, CA 94538, USA'
+  search_url = addr_to_search_url(search_url)
+  url = parse_searching_page(search_url)
+  if url:
+    print(url)
+    item = parse(url)
+    print('item:{},url:{}'.format(item,url))
