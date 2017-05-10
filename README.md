@@ -13,6 +13,12 @@
   'source':'redfin'
 }
 ```
+exception:
+```
+    {'errmsg':'missing addr in parameters'}
+
+    {'errmsg':'no match found for input address'}
+```
 
 
 #### interface2: http://xxx.xx.xx.xx:8000/post-url
@@ -25,4 +31,10 @@
 {
   'url':'https://www.redfin.com/CA/Fremont/2913-Pescadero-Ter-94539/home/40627585/'
 }
+```
+exception:
+```
+    {'errmsg':'missing url in parameters'}
+    
+    {'errmsg':'no match found for input url'}
 ```
