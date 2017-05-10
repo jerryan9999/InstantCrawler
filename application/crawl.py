@@ -43,7 +43,8 @@ def post_addr():
   """
   Service entrance 
   Args:
-    {'addr' : '380 5th Ave, New York, NY 10018, USA'}
+    {'addr' : '380 5th Ave, New York, NY 10018, USA' 'source':'zillow'} -source is optional default is zillow
+    {'addr' : '380 5th Ave, New York, NY 10018, USA' 'source':'redfin'}
 
   Returns:
     {'errmsg':'missing addr in parameters'}
@@ -55,10 +56,27 @@ def post_addr():
     return jsonify({'errmsg':'missing addr in parameters'}), 400
 
   formatted_address = params['addr']
-  search_url = zillow.addr_to_search_url(formatted_address)
-  url = zillow.parse_searching_page(search_url)
-  if url:
-    item = zillow.parse(url)
-    return jsonify({'msg':'success','data':item.get('data')}), 201
-  else:
-    return jsonify({'errmsg':'no match found for input address'}),400
+
+  if not params.get('source'):
+    params['source'] = 'zillow'
+
+  # search zillow
+  if params['source']=='zillow':
+    search_url = zillow.addr_to_search_url(formatted_address)
+    url = zillow.parse_searching_page(search_url)
+    if url:
+      item = zillow.parse(url)
+      return jsonify({'msg':'success','data':item.get('data')}), 201
+    else:
+      return jsonify({'errmsg':'no match found for input address'}),400
+
+  # search redfin
+  if params['source']=='redfin':
+    search_url = redfin.addr_to_search_url(formatted_address)
+    print(search_url)
+    url = redfin.parse_searching_page(search_url)
+    if url:
+      item = redfin.parse(url)
+      return jsonify({'msg':'success','data':item.get('data')}), 201
+    else:
+      return jsonify({'errmsg':'no match found for input address'}),400
