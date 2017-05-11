@@ -43,6 +43,13 @@ def parse(url):
   item['type'] = sel.xpath('//div[contains(@class, "keyDetailsList")]/div/span[2]/text()').extract_first()
   item['size'] = sel.xpath('//span[contains(@class,"main-font statsValue")]/text()').extract_first()
   
+  item['longitude'] = None
+  item['latitude'] = None
+  lng_and_lat = sel.xpath('//head/meta[contains(@name, "geo.position")]/@content').extract_first()
+  if lng_and_lat and len(lng_and_lat.split(';') == 2):
+    item['longitude'] = lng_and_lat.split(';')[0]
+    item['latitude'] = lng_and_lat.split(';')[1]
+
   fact_and_features_sel1 = sel.xpath('//div[contains(@class, "amenity-group")]/ul//li/text()').extract()
   fact1 = set(re.split('# |:|,| ', ','.join(fact_and_features_sel1)))
   fact_and_features_sel2 = sel.xpath('//div[contains(@class, "amenity-group")]/ul//span/text()').extract()
@@ -92,7 +99,7 @@ def parse_searching_page(url):
 
 
 if __name__ == '__main__':
-  #url = 'https://www.redfin.com/WA/Seattle/4721-47th-Ave-SW-98116/home/152688'
+  #url = 'https://www.redfin.com/WA/Bothell/10108-NE-204th-St-98011/home/286783'
   formatted_address ='2913 Pescadero Terrace, Fremont, CA 94538, USA'
   search_url = addr_to_search_url(search_url)
   url = parse_searching_page(search_url)
