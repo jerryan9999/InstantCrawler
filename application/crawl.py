@@ -14,11 +14,11 @@ def posturl():
     {'url' : 'http://example.com'}
 
   Returns:
-    The parameter must contain url field. else return {'errmsg':'missing url in parameters'}
-    if status == 400
-      return {'errmsg':'request failed'}
-    else:
-      return { 'msg': 'success' 'data' : dict}
+    {'errmsg':'missing url in parameters'}
+    {'errmsg':'invalid url'}
+    {'errmsg':'no match found for input url'}
+
+    { 'msg': 'success' 'data' : dict}
   """
   params = request.get_json(force=True,silent=True)
   if not params or not 'url' in params:
