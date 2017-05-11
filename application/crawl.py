@@ -2,7 +2,7 @@
 # -*- coding: UTF-8 -*-#
 
 from flask import Flask, jsonify, request
-from .crawlers import zillow, redfin
+from .crawlers.crawlers import ZillowCrawler,RedfinCrawler
 import json
 from config import app
 
@@ -25,17 +25,19 @@ def posturl():
     return jsonify({'errmsg':'missing url in parameters'}), 400
 
   url = params['url']
-  if 'www.redfin.com' in url:
-    item = redfin.parse(url)
+  if 'redfin.com' in url:
+    crawler = RedfinCrawler(check_string='home')
   elif 'zillow.com' in url:
-    item = zillow.parse(url)
+    crawler = ZillowCrawler(check_string='zpid')
   else:
     return jsonify({'errmsg':'invalid url'}),400
 
-  if item.get('status') == 400:
+  response = crawler.get_html(url)
+  if response.get('status') == 400:
     return jsonify({'errmsg':'no match found for input url'}),400
 
-  return jsonify({'msg':'success','data':item.get('data')}), 201
+  item = crawler.parse(response)
+  return jsonify({'msg':'success','data':item['data']}), 201
 
 
 @app.route('/post-addr',methods=['POST'])
@@ -62,21 +64,15 @@ def post_addr():
 
   # search zillow
   if params['source']=='zillow':
-    search_url = zillow.addr_to_search_url(formatted_address)
-    url = zillow.parse_searching_page(search_url)
-    if url:
-      item = zillow.parse(url)
-      return jsonify({'msg':'success','data':item.get('data')}), 201
-    else:
-      return jsonify({'errmsg':'no match found for input address'}),400
+    crawler = ZillowCrawler(check_string='zpid')
+  elif params['source']=='redfin':
+    crawler = RedfinCrawler(check_string='home')
 
-  # search redfin
-  if params['source']=='redfin':
-    search_url = redfin.addr_to_search_url(formatted_address)
-    #print(search_url)
-    url = redfin.parse_searching_page(search_url)
-    if url:
-      item = redfin.parse(url)
-      return jsonify({'msg':'success','data':item.get('data')}), 201
-    else:
-      return jsonify({'errmsg':'no match found for input address'}),400
+  search_url = crawler.addr_to_search_url(formatted_address)
+  room_url = crawler.parse_searching_page(search_url)
+  if room_url:
+    response = crawler.get_html(room_url)
+    if response.get('html'):
+      item = crawler.parse(response)
+      return jsonify({'msg':'success','data':item['data']}), 201
+  return jsonify({'errmsg':'no match found for input address'}),400
