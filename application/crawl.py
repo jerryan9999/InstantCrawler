@@ -20,7 +20,7 @@ def posturl():
 
     { 'msg': 'success' 'data' : dict}
   """
-  params = request.get_json(force=True,silent=True)
+  params = request.get_json()
   if not params or not 'url' in params:
     return jsonify({'errmsg':'missing url in parameters'}), 400
 
@@ -53,7 +53,7 @@ def post_addr():
     {'errmsg':'no match found for input address'}
     { 'msg': 'success','data' : data}
   """
-  params = request.get_json(force=True,silent=True)
+  params = request.get_json()
   if not params or not 'addr' in params:
     return jsonify({'errmsg':'missing addr in parameters'}), 400
 
