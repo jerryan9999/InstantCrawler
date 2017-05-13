@@ -3,7 +3,10 @@
 
 import requests
 from parsel import Selector
-from urllib.parse import urlencode
+try:
+  from urllib.parse import urlencode
+except:
+  from urllib import urlencode
 import xml.etree.ElementTree as ET
 import re
 

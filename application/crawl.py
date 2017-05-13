@@ -37,7 +37,7 @@ def posturl():
     return jsonify({'errmsg':'no match found for input url'}),400
 
   item = crawler.parse(response)
-  return jsonify({'msg':'success','data':item['data']}), 201
+  return jsonify({'msg':'success','data':item['data']}), 200
 
 
 @app.route('/post-addr',methods=['POST'])
@@ -74,5 +74,5 @@ def post_addr():
     response = crawler.get_html(room_url)
     if response.get('html'):
       item = crawler.parse(response)
-      return jsonify({'msg':'success','data':item['data']}), 201
+      return jsonify({'msg':'success','data':item['data']}), 200
   return jsonify({'errmsg':'no match found for input address'}),400
