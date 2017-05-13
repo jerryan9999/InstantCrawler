@@ -128,7 +128,18 @@ class ZillowCrawler(Webcrawler):
       item['latitude'] = ts.group(1)
       item['longitude'] = ts.group(2)
     fact_and_features_sel = sel.xpath('//div[contains(@class,"hdp-facts-expandable-container")]')
-    item['type'] =fact_and_features_sel.xpath('div[contains(@class,"zsg-g")]/div[1]/div/div[2]/div/text()').extract_first()
+    room_type =fact_and_features_sel.xpath('div[contains(@class,"zsg-g")]/div[1]/div/div[2]/div/text()').extract_first()
+    if room_type:
+      if "SINGLE FAMILY" in room_type.upper() or "TOWNHOUSE" in room_type.upper():
+        item['type'] = 1
+      elif "MULTL FAMILY" in room_type.upper():
+        item['type'] = 2
+      elif "CONDO" in room_type.upper() or "CONDOMINIUM" in room_type.upper():
+        item['type'] = 3
+      else:
+        item['type'] = None
+    else:
+      item['type'] = None
 
     # features set preparation
     features = fact_and_features_sel.xpath('//span[@class="hdp-fact-value"]/text()').extract()
